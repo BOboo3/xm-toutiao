@@ -8,6 +8,7 @@ Vue.use(VueRouter)
 const router = new VueRouter({
   // 路由规则
   routes: [
+    { path: '/', name: 'home', redirect: '/login' },
     { path: '/login', name: 'login', component: Login }
   ]
 })

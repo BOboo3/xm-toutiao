@@ -4,6 +4,21 @@
 <el-card class="login_box">
     <img src="@/assets/images/logo_index.png" alt="">
     <!-- 表单 -->
+    <el-form>
+        <el-form-item>
+            <el-input placeholder="请输入手机号" ></el-input>
+        </el-form-item>
+        <el-form-item>
+            <el-input placeholder="请输入验证码" style="width:280px"></el-input>
+            <el-button style="float:right">发送验证码</el-button>
+        </el-form-item>
+        <el-form-item style="text-decoration:none">
+           <el-checkbox v-model="checked"></el-checkbox>我已阅读并同意<el-link :underline="false">用户协议</el-link>和<el-link :underline="false">隐私条款</el-link>
+        </el-form-item>
+        <el-form-item>
+            <el-button style="width:100%" type="primary" >登 录</el-button>
+        </el-form-item>
+    </el-form>
 
 </el-card>
     </div>
@@ -11,6 +26,11 @@
 
 <script>
 export default {
+  data () {
+    return {
+      checked: true
+    }
+  }
 
 }
 </script>
@@ -25,16 +45,23 @@ export default {
     background:url(../../assets/images/login_bg.jpg) no-repeat center / cover;
 }
 .login_box{
-    width: 500px;
-    height: 450px;
+    width: 450px;
+    height: 400px;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%,-50%);
     img{
         display: block;
-        width: 250px;
-        margin: 0 auto;
+        width: 200px;
+        margin: 10px auto 30px;
     }
 }
+.el-checkbox{
+    margin-right: 5px;
+}
+.el-link{
+    color:#409eff;
+}
+
 </style>
