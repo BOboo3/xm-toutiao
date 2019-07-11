@@ -1,4 +1,4 @@
-        <template>
+            <template>
     <div class="login-container">
         <!-- 卡片 -->
         <el-card class="login_box">
@@ -49,12 +49,10 @@ export default {
           // 具体的校验规则 比如 是否必填 长度 格式
           { required: true, message: '手机号必填', trigger: 'blur' },
           { validator: checkMobile, trigger: 'blur' }
-
         ],
         code: [
           { required: true, message: '验证码必填', trigger: 'blur' },
           { len: 6, message: '请输入6位验证码', trigger: 'blur' }
-
         ]
       },
       // 默认选中复选框
@@ -68,9 +66,11 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           // 如果校验成功 进行登录
-          this.$http.post('http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
-            this.loginForm
-          )
+          this.$http
+            .post(
+              'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+              this.loginForm
+            )
             .then(res => {
               // res是响应对象 包含响应数据
               const data = res.data
@@ -92,7 +92,7 @@ export default {
 }
 </script>
 
-        <style scoped lang='less'>
+            <style scoped lang='less'>
     .login-container {
     width: 100%;
     height: 100%;
