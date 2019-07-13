@@ -24,4 +24,23 @@ const router = new VueRouter({
     { path: '*', name: '404', component: NotFound }
   ]
 })
+
+// 注册一个全局的导航守卫
+router.beforeEach((to, from, next) => {
+  // 如果不去主动触发resolve（next 下一步）会一直等待
+  // console.log('ok')
+  // 如果是登录页面 放行
+  // if (to.path === '/login') return next()
+  // 判断登录状态
+  // const user = window.sessionStorage.getItem('xm-toutiaao')
+  // if (user) {
+  //   next()
+  // } else {
+  //   next('/login')
+  // }
+  const user = window.sessionStorage.getItem('xm-toutiao')
+  if (to.path !== '/login' && !user) return next('/login')
+  next()
+})
+
 export default router
