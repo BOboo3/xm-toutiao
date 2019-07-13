@@ -8,8 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 // 在vue-cli创建的项目中 @的前缀代表的是根路径src目录
 import router from '@/router'
 
-import axios from 'axios'
-
+import axios from '@/api/axios'
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
