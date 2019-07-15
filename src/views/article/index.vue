@@ -3,7 +3,7 @@
         <!-- 筛选容器 -->
         <el-card>
             <div slot="header">
-                <my-bread>粉丝管理</my-bread>
+                <my-bread>内容管理</my-bread>
             </div>
         <!-- 筛选容器内容 -->
         <el-form :model="reqParams" size="small" label-width="80px">
@@ -43,9 +43,8 @@
 </template>
 
 <script>
-import MyBread from '@/components/my-bread.vue'
 export default {
-  components: { MyBread },
+  components: { },
   data () {
     return {
     // 提交给后台的筛选条件 传参
