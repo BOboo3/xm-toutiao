@@ -3,10 +3,7 @@
         <!-- 筛选容器 -->
         <el-card>
             <div slot="header">
-                <el-breadcrumb separator-class="el-icon-arrow-right">
-                    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-                    <el-breadcrumb-item>内容管理</el-breadcrumb-item>
-                </el-breadcrumb>
+                <my-bread>粉丝管理</my-bread>
             </div>
         <!-- 筛选容器内容 -->
         <el-form :model="reqParams" size="small" label-width="80px">
@@ -39,12 +36,16 @@
         </el-form>
         </el-card>
         <!-- 结果容器 -->
-        <el-card></el-card>
+        <el-card>
+
+        </el-card>
     </div>
 </template>
 
 <script>
+import MyBread from '@/components/my-bread.vue'
 export default {
+  components: { MyBread },
   data () {
     return {
     // 提交给后台的筛选条件 传参
