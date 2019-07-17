@@ -1,5 +1,7 @@
 <template>
     <div class="container">
+      <my-channel @input="fn"></my-channel>
+      {{testDate}}
         <!-- 筛选容器 -->
         <el-card>
             <div slot="header">
@@ -89,8 +91,9 @@ export default {
   components: { },
   data () {
     return {
-    // 提交给后台的筛选条件 传参
-    // 数据默认是''还是null区别，如果是null将不会发送字段
+      testDate: '',
+      // 提交给后台的筛选条件 传参
+      // 数据默认是''还是null区别，如果是null将不会发送字段
       reqParams: {
         page: 1,
         per_page: 10,
@@ -116,6 +119,10 @@ export default {
     this.getArticles()
   },
   methods: {
+    fn (data) {
+      console.log('fn')
+      this.testData = data
+    },
     edit (id) {
     //   this.$router.push('/publish' + id)
       this.$router.push({ path: '/publish', query: { id } })
