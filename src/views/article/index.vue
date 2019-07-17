@@ -23,6 +23,8 @@
             </el-form-item>
             <el-form-item label="时间：">
                 <el-date-picker
+                value-format="yyy-MM-dd"
+                @change="changeDate"
                    v-model="dateValues"
                    type="daterange"
                    range-separator="至"
@@ -31,13 +33,53 @@
                 </el-date-picker>
                 </el-form-item>
                 <el-form-item >
-                    <el-button type="primary">筛选</el-button>
+                    <el-button type="primary" @click="search()">筛选</el-button>
                 </el-form-item>
         </el-form>
         </el-card>
         <!-- 结果容器 -->
         <el-card>
-
+            <div slot="header">
+                根据筛选条件共查询到 <b> {{total}} </b>条结果：
+            </div>
+            <el-table :data="articles">
+                <el-table-column label="封面">
+                    <template slot-scope="scope">
+                        <el-image lazy :src="scope.row.cover.images[0]" style="width:100px;height=75px;">
+                            <div slot="error" class="image-slot">
+                                <img src="../../assets/images/error.gif" width="100px" height="75px" alt="">
+                            </div>
+                        </el-image>
+                    </template>
+                </el-table-column>
+                <el-table-column label="标题" prop="title"></el-table-column>
+                <el-table-column label="状态" prop="status">
+                    <template slot-scope="scope">
+                        <el-tag type="info" v-if="scope.row.status===0">草稿</el-tag>
+                        <el-tag v-if="scope.row.status===1">待审核</el-tag>
+                        <el-tag type="success" v-if="scope.row.status===2">审核通过</el-tag>
+                        <el-tag type="warning" v-if="scope.row.status===3">审核失败</el-tag>
+                        <el-tag type="danger" v-if="scope.row.status===4">已删除</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="发布时间" prop="pubdate"></el-table-column>
+                <el-table-column label="操作" width="120px">
+                    <template slot-scope="scope">
+                        <el-button icon="el-icon-edit" plain circle type="primary" @click="edit(scope.row.id)"></el-button>
+                        <el-button icon="el-icon-delete" plain circle type="danger" @click="del(scope.row.id)"></el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="box">
+            <el-pagination
+            background
+            layout="prev, pager, next"
+            :current-page="reqParams.page"
+            @current-change="changePager"
+            :page-size="reqParams.per_page"
+            :total="total"
+            ></el-pagination>
+            </div>
         </el-card>
     </div>
 </template>
@@ -50,15 +92,79 @@ export default {
     // 提交给后台的筛选条件 传参
     // 数据默认是''还是null区别，如果是null将不会发送字段
       reqParams: {
+        page: 1,
+        per_page: 10,
         status: null,
         channel_id: null,
         begin_pubdate: null,
         end_pubdate: null
       },
       //   默认频道数据
-      channelOptions: [{ name: 'Java', id: 1 }],
+      channelOptions: [],
       //   日期控件的数据
-      dateValues: []
+      dateValues: [],
+      //   文章列表
+      articles: [],
+      //   总条数
+      total: 0
+    }
+  },
+  created () {
+    //   获取频道数据
+    this.getChannelOptions()
+    // 获取列表数据
+    this.getArticles()
+  },
+  methods: {
+    edit (id) {
+    //   this.$router.push('/publish' + id)
+      this.$router.push({ path: '/publish', query: { id } })
+    },
+    del (id) {
+      // 确认框
+      this.$confirm('此操作将永久删除该文章, 是否继续?', '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(async () => {
+          // 点击确认 发删除请求
+          // 后台没有任何响应 一直等待响应 等待后面的代码无法执行
+          await this.$http.delete(`articles/${id}`)
+          // 删除成功后做什么
+          this.getArticles()
+          this.$message.success('删除成功')
+        })
+        .catch(() => {})
+    },
+    changePager (newPage) {
+      // newPage 当前点击的按钮的页码
+      // 更新提交给后台的参数
+      this.reqParams.page = newPage
+      // 获取列表数据
+      this.getArticles()
+    },
+    search () {
+      this.reqParams.page = 1
+      this.getArticles()
+    },
+    changeDate (values) {
+    //    给begin end 赋值即可
+      this.reqParams.begin_pubdate = values[0]
+      this.reqParams.end_pubdate = values[1]
+    },
+    async getChannelOptions () {
+      // const o = {data :{}};const {data}=o; 一层解构 对象的结构一层
+      // consr res = {data:{data:{channels:{}}}}; 多层解构 const {data:{data:data}}
+      const { data: { data } } = await this.$http.get('channels')
+      this.channelOptions = data.channels
+    },
+    async getArticles () {
+    // post 传参 axios.post('url',(参数对象))
+    // get 传参 axios.get('url',{params:(参数对象)})
+      const { data: { data } } = await this.$http.get('articles', { params: this.reqParams })
+      this.articles = data.results
+      this.total = data.total_count
     }
   }
 }
@@ -68,6 +174,10 @@ export default {
 // 注意：el-card是组件，解析后标签的名字不是 el-card，标签上类名和自定义标签名一致
 .el-card{
     margin-bottom:20px;
+}
+.box {
+    margin-top: 20px;
+    text-align: center;
 }
 
 </style>
