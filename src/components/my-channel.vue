@@ -1,21 +1,29 @@
 <template>
-    <div class="container">
-        <button @click="toPrant()">给父组件数据</button>
-    </div>
+    <el-select :value="value" @change="fn">
+        <el-option v-for="item in channelOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+    </el-select>
 </template>
 
 <script>
 export default {
   name: 'my-channel',
+  props: ['value'],
   data () {
     return {
-      childText: '子组件数据'
+      channelOptions: []
     }
   },
+  created () {
+    // 获取频道数据
+    this.getData()
+  },
   methods: {
-    toPrant () {
-    // 发送数据给父组件
-      this.$emit('input', this.childText)
+    fn (value) {
+      this.$emit('input', value)
+    },
+    async getData () {
+      const { data: { data } } = await this.$http.get('channels')
+      this.channelOptions = data.channels
     }
   }
 }
