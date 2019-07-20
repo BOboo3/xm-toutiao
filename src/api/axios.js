@@ -7,9 +7,12 @@ const instance = axios.create({
   //   headers: {
   //   Authorization: 'Bearer ' + JSON.parse(window.sessionStorage.getItem('xm-toutiao')).token
   //   }
-  transformRespons: [(data) => {
+  transformResponse: [(data) => {
     // 处理格式
-    return JSONBig.parse(data)
+    if (data) {
+      return JSONBig.parse(data)
+    }
+    return data
   }]
 })
 
@@ -34,10 +37,10 @@ instance.interceptors.request.use(config => {
 // 响应拦截器
 instance.interceptors.response.use(response => {
   return response
-}, error => {
+}, (error) => {
   // 做自己 事情 错的时候
   // 如果响应状态码是401拦截到登录页面
-  if (error.response.status === 401) {
+  if (error.response && error.response.status === 401) {
   // hash是location提供获取操作地址栏#后的地址的属性
     location.hash = '#/login'
   }
